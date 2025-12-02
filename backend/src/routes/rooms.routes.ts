@@ -6,6 +6,6 @@ import { validateRoomSearchDates } from '../middleware/validateRoomSearch.middle
 
 const router = Router();
 
-router.get('/', authMiddleware, validateRoomSearchDates, getRoomsController);
+router.get('/', validateRoomSearchDates, getRoomsController);
 
 export default router;
