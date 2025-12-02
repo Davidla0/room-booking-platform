@@ -130,3 +130,21 @@ http://localhost:4000
 A simple health check:
 
 curl http://localhost:4000/api/health
+
+## 8. Frontend (React)
+
+The `frontend` folder contains a simple React + TypeScript client that demonstrates:
+
+- Login / register against the backend
+- Searching rooms by location, capacity and date range
+- Creating bookings
+- Viewing "My bookings"
+
+### Run frontend locally
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+The app will be available at http://localhost:5173.
