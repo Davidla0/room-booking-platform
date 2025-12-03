@@ -1,14 +1,16 @@
-// src/lib/prisma.ts
-import 'dotenv/config';                 // כדי ש-DATABASE_URL ייטען מה-.env
-import { PrismaClient } from '../generated/prisma';
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import pg from 'pg';
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not set');
+}
+
+const adapter = new PrismaPg({
+  connectionString,
 });
-
-const adapter = new PrismaPg(pool);
 
 const globalForPrisma = global as unknown as {
   prisma?: PrismaClient;
@@ -17,8 +19,8 @@ const globalForPrisma = global as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    adapter,                         
-    log: ['query', 'error', 'warn'], 
+    adapter,
+    log: ['query', 'error', 'warn'],
   });
 
 if (!globalForPrisma.prisma) {

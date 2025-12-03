@@ -22,7 +22,7 @@ export async function registerController(req: Request, res: Response) {
       createdAt: user.createdAt
     });
   } catch (err: any) {
-    if (err.code === 'EMAIL_EXISTS') {
+    if (err.code === 'EMAIL_EXISTS' || err.code === 'EMAIL_TAKEN') {
       return res.status(409).json({
         error: 'EMAIL_ALREADY_EXISTS',
         message: 'A user with this email already exists'

@@ -1,4 +1,3 @@
-// src/services/rooms.service.ts
 
 import { prisma } from '../lib/prisma';
 import { RoomSearchParams, PaginatedRoomsResult } from '../types/room.types';

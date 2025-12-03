@@ -1,6 +1,6 @@
-import type { Booking as DbBooking, BookingStatus } from '../generated/prisma';
+import type { Booking as DbBooking, BookingStatus, Room } from '../generated/prisma';
 
-export type Booking = DbBooking;
+export type Booking = DbBooking & { room?: Room };
 
 export interface CreateBookingInput {
   roomId: string;

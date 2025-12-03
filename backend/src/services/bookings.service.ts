@@ -70,6 +70,9 @@ export async function getBookings(filter: BookingFilter = {}): Promise<Booking[]
       roomId: roomId || undefined,
       status: status || undefined,
     },
+    include: {
+      room: true,
+    },
     orderBy: {
       checkIn: 'desc',
     },

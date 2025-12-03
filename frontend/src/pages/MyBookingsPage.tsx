@@ -1,6 +1,7 @@
-// src/pages/MyBookingsPage.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { apiFetch, useAuth } from '../auth/AuthContext';
+import { PagePanel } from '../components/PagePanel';
+import { BookingsTable } from '../components/BookingsTable';
 
 interface Booking {
   id: string;
@@ -10,6 +11,10 @@ interface Booking {
   checkOut: string;
   guests: number;
   status: string;
+  room?: {
+    name: string;
+    location: string;
+  };
 }
 
 interface BookingResponse {
@@ -43,39 +48,61 @@ export default function MyBookingsPage() {
   }, [token]);
 
   if (!token) {
-    return <div>You must be logged in to see your bookings.</div>;
+    return (
+      <PagePanel
+        title="My bookings"
+        subtitle="Sign in to view and manage all of your room reservations."
+      >
+        <div className="empty-state">You must be logged in to see your bookings.</div>
+      </PagePanel>
+    );
   }
 
   return (
-    <div>
-      <h2>My Bookings</h2>
-      {loading && <div>Loading...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+    <PagePanel
+      title="My bookings"
+      subtitle="See all your upcoming and past reservations in one place."
+      rightMeta={
+        bookings.length > 0 ? (
+          <>
+            Total{' '}
+            <strong>
+              {bookings.length} booking{bookings.length > 1 ? 's' : ''}
+            </strong>
+          </>
+        ) : null
+      }
+    >
+      {loading && <div className="empty-state">Loading your bookings…</div>}
+      {error && (
+        <div
+          style={{
+            marginTop: '8px',
+            marginBottom: '4px',
+            fontSize: '13px',
+            color: 'var(--danger)',
+          }}
+        >
+          {error}
+        </div>
+      )}
 
-      {bookings.length === 0 && !loading && <div>No bookings yet.</div>}
+      {!loading && bookings.length === 0 && !error && (
+        <div className="empty-state">You don&apos;t have any bookings yet.</div>
+      )}
 
-      <ul style={{ paddingLeft: 0, listStyle: 'none' }}>
-        {bookings.map(b => (
-          <li
-            key={b.id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: 4,
-              padding: '0.75rem',
-              marginBottom: '0.5rem',
-            }}
-          >
-            <p>Booking ID: {b.id}</p>
-            <p>Room ID: {b.roomId}</p>
-            <p>
-              {new Date(b.checkIn).toLocaleDateString()} →{' '}
-              {new Date(b.checkOut).toLocaleDateString()}
-            </p>
-            <p>Guests: {b.guests}</p>
-            <p>Status: {b.status}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+      {!loading && bookings.length > 0 && (
+        <BookingsTable
+          bookings={bookings.map(b => ({
+            id: b.id,
+            roomName: b.room?.name ?? b.roomId,
+            checkIn: b.checkIn,
+            checkOut: b.checkOut,
+            guests: b.guests,
+            status: b.status,
+          }))}
+        />
+      )}
+    </PagePanel>
   );
 }

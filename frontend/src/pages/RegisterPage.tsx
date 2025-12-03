@@ -1,7 +1,7 @@
-// src/pages/RegisterPage.tsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { apiFetch, useAuth } from '../auth/AuthContext';
+import { AuthLayout } from '../components/AuthLayout';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ export default function RegisterPage() {
         body: JSON.stringify({ email, fullName, password }),
       });
 
-      // אחרי רישום – עושים login
       const data = await apiFetch('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
@@ -39,40 +38,70 @@ export default function RegisterPage() {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: 300 }}
-      >
-        <input
-          type="text"
-          placeholder="full name"
-          value={fullName}
-          onChange={e => setFullName(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+    <AuthLayout
+      title="Create your account"
+      subtitle="Sign up to manage workspace bookings and keep everything in one place."
+      footer={
+        <>
+          Already have an account? <Link to="/login">Log in</Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label htmlFor="fullName">Full name</label>
+          <input
+            id="fullName"
+            type="text"
+            placeholder="Jane Doe"
+            value={fullName}
+            onChange={e => setFullName(e.target.value)}
+          />
+        </div>
 
-        {error && <div style={{ color: 'red' }}>{error}</div>}
+        <div className="field" style={{ marginTop: 10 }}>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+        </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
+        <div className="field" style={{ marginTop: 10 }}>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Choose a secure password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </div>
+
+        {error && (
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: '13px',
+              color: 'var(--danger)',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading}
+          style={{ marginTop: 16, width: '100%', justifyContent: 'center' }}
+        >
+          {loading ? 'Registering…' : 'Register'}
         </button>
       </form>
-      <p style={{ marginTop: '1rem' }}>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
-    </div>
+    </AuthLayout>
   );
 }

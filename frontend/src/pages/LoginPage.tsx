@@ -1,11 +1,12 @@
-// src/pages/LoginPage.tsx
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth, apiFetch } from '../auth/AuthContext';
+import { AuthLayout } from '../components/AuthLayout';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('demo@example.com');
   const [password, setPassword] = useState('demo1234');
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +24,10 @@ export default function LoginPage() {
       });
 
       login(data.accessToken, data.user);
-      navigate('/rooms');
+
+      const state = location.state as any;
+      const redirectTo = state?.from || '/rooms';
+      navigate(redirectTo);
     } catch (err: any) {
       setError(err.message || 'Failed to login');
     } finally {
@@ -32,32 +36,69 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <p>You can use the seeded demo user: demo@example.com / demo1234</p>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: 300 }}>
-        <input
-          type="email"
-          placeholder="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+    <AuthLayout
+      title="Welcome back"
+      subtitle="Use the demo account or your own credentials to access your workspace bookings."
+      footer={
+        <>
+          Don&apos;t have an account? <Link to="/register">Create one</Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="demo@example.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+        </div>
 
-        {error && <div style={{ color: 'red' }}>{error}</div>}
+        <div className="field" style={{ marginTop: 10 }}>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+        {error && (
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: '13px',
+              color: 'var(--danger)',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading}
+          style={{ marginTop: 16, width: '100%', justifyContent: 'center' }}
+        >
+          {loading ? 'Logging in…' : 'Login'}
         </button>
+
+        <p
+          style={{
+            marginTop: 10,
+            fontSize: '12px',
+            color: 'var(--text-muted)',
+          }}
+        >
+          Demo user: demo@example.com / demo1234
+        </p>
       </form>
-      <p style={{ marginTop: '1rem' }}>
-        Don&apos;t have an account? <Link to="/register">Register</Link>
-      </p>
-    </div>
+    </AuthLayout>
   );
 }

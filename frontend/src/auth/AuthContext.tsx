@@ -57,7 +57,6 @@ export function useAuth() {
   return ctx;
 }
 
-// helper קטן לקריאות API עם טוקן
 export async function apiFetch(
   path: string,
   options: RequestInit = {},

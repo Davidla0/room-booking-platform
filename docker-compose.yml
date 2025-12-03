@@ -1,12 +1,11 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: room-booking-postgres
-    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: room_booking
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
     ports:
       - "5432:5432"
     volumes:
@@ -15,9 +14,36 @@ services:
   adminer:
     image: adminer
     container_name: room-booking-adminer
-    restart: always
+    depends_on:
+      - postgres
     ports:
       - "8080:8080"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: room-booking-backend
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/room_booking
+      PORT: 4000
+      JWT_SECRET: super-secret-change-me
+    depends_on:
+      - postgres
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:4000/api
+    container_name: room-booking-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
 
 volumes:
   postgres_data:

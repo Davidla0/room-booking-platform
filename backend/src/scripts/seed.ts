@@ -27,52 +27,47 @@ async function main() {
   });
 
   console.log(`✅ Created demo user: ${demoUser.email} (password: demo1234)`);
+  
+  for (let index = 0; index < 10; index++) {
 
-  const room1 = await prisma.room.create({
-    data: {
-      name: 'Deluxe Sea View',
-      location: 'tel-aviv',
-      capacity: 4,
-      pricePerNight: 120,
-      currency: 'USD',
-      amenities: ['wifi', 'air_conditioning', 'tv'],
-    },
-  });
+    await prisma.room.create({
+      data: {
+        name: 'Deluxe Sea View',
+        location: 'haifa',
+        capacity: 4,
+        pricePerNight: 120,
+        currency: 'USD',
+        amenities: ['wifi', 'air_conditioning', 'tv'],
+        imageUrl: "https://images.pexels.com/photos/271619/pexels-photo-271619.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      },
+    });
 
-  const room2 = await prisma.room.create({
-    data: {
-      name: 'Business Suite',
-      location: 'jerusalem',
-      capacity: 2,
-      pricePerNight: 90,
-      currency: 'USD',
-      amenities: ['wifi', 'desk'],
-    },
-  });
+    await prisma.room.create({
+      data: {
+        name: 'Business Suite',
+        location: 'jerusalem',
+        capacity: 2,
+        pricePerNight: 90,
+        currency: 'USD',
+        amenities: ['wifi', 'desk'],
+        imageUrl: "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      },
+    });
 
-  const room3 = await prisma.room.create({
-    data: {
-      name: 'Family Room',
-      location: 'tel-aviv',
-      capacity: 5,
-      pricePerNight: 150,
-      currency: 'USD',
-      amenities: ['wifi', 'air_conditioning'],
-    },
-  });
+    await prisma.room.create({
+      data: {
+        name: 'Family Room',
+        location: 'tel-aviv',
+        capacity: 5,
+        pricePerNight: 150,
+        currency: 'USD',
+        amenities: ['wifi', 'air_conditioning'],
+        imageUrl: "https://images.pexels.com/photos/261169/pexels-photo-261169.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      },
+    });
 
-  console.log('✅ Created 3 rooms');
-
-  await prisma.booking.create({
-    data: {
-      userId: demoUser.id,
-      roomId: room1.id,
-      checkIn: new Date('2025-12-10'),
-      checkOut: new Date('2025-12-15'),
-      guests: 2,
-      status: 'CONFIRMED',
-    },
-  });
+    console.log('✅ Created 3 rooms');
+  } 
 
   console.log('✅ Created sample booking for room1 (Deluxe Sea View)');
   console.log('🌱 Seeding finished successfully');

@@ -1,4 +1,3 @@
-// src/controllers/bookings.controller.ts
 
 import { Request, Response } from 'express';
 import { createBooking, getBookings } from '../services/bookings.service';

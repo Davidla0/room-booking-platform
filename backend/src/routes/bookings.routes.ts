@@ -1,4 +1,3 @@
-// src/routes/bookings.routes.ts
 
 import { Router } from 'express';
 import { createBookingController, getMyBookingsController } from '../controllers/bookings.controller';
